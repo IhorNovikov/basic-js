@@ -1,25 +1,74 @@
 const CustomError = require("../extensions/custom-error");
 
 class VigenereCipheringMachine {
-    constructor(type) {
+    constructor(type = true) {
         this.type = type
     }
     encrypt(str, key) {
         if (!str || !key) {
             throw new Error('Please set arguments')
         }
-        if ((!this.type) || (this.type === true)) {
-            return str.toUpperCase()
+        if (this.type) {
+            let abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+            let result = []
+            let numberStr = str.toLowerCase().replace(/\W|\d/g, '').split('').map(i => i = abc.indexOf(i))
+            let cipher = ''.padStart(numberStr.length, key).toLowerCase();
+            let numberCipher = cipher.split('').map(i => i = abc.indexOf(i))
+
+            let indexArr = [...new Set(str.split('').map((i, inx) => i.match(/\W|\d/) ? inx : ''))].splice(1)
+
+            let symbolArr = str.match(/\W|\d/g)
+
+            for (let i = 0; i < numberCipher.length; i++) {
+
+                result[i] = abc[(numberStr[i] + numberCipher[i]) % abc.length].toUpperCase()
+            }
+
+
+            for (let j = 0; j < indexArr.length; j++) {
+                result.splice(indexArr[j], 0, symbolArr[j])
+            }
+            if (this.type) { return result.join('') }
+            return result.reverse().join('')
         }
     }
+
+
     decrypt(str, key) {
         if (!str || !key) {
             throw new Error('Please set arguments')
         }
-        if (this.type === false) {
-            return str.toUpperCase()
+
+        let abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+        let result = []
+        let numberStr = str.toLowerCase().replace(/\W/g, '').split('').map(i => i = abc.indexOf(i))
+        let cipher = ''.padStart(numberStr.length, key);
+        let numberCipher = cipher.split('').map(i => i = abc.indexOf(i))
+
+
+        let indexArr = [...new Set(str.split('').map((i, inx) => i.match(/\W/) ? inx : ''))].splice(1)
+
+        let symbolArr = str.match(/\W/g)
+
+        for (let i = 0; i < numberCipher.length; i++) {
+
+            result[i] = abc[(numberStr[i] - numberCipher[i] + abc.length) % abc.length].toUpperCase()
         }
+
+
+        for (let j = 0; j < indexArr.length; j++) {
+            result.splice(indexArr[j], 0, symbolArr[j])
+        }
+        if (this.type) { return result.join('') }
+        return result.reverse().join('')
+
     }
 }
+
+
+
+
+
+
 
 module.exports = VigenereCipheringMachine;
