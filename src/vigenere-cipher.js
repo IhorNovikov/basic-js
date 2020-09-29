@@ -3,17 +3,17 @@ const CustomError = require("../extensions/custom-error");
 class VigenereCipheringMachine {
     constructor(type = true) {
         this.type = type
+        this.abc ='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     }
     encrypt(str, key) {
         if (!str || !key) {
             throw new Error('Please set arguments')
         }
 
-        let abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         let result = []
-        let numberStr = str.toLowerCase().replace(/\W|\d|/g, '').split('').map(i => i = abc.indexOf(i))
-        let cipher = ''.padStart(numberStr.length, key).toLowerCase();
-        let numberCipher = cipher.split('').map(i => i = abc.indexOf(i))
+        let numberStr = str.toUpperCase().replace(/\W|\d|/g, '').split('').map(i => i = this.abc.indexOf(i))
+        let cipher = ''.padStart(numberStr.length, key).toUpperCase();
+        let numberCipher = cipher.split('').map(i => i = this.abc.indexOf(i))
 
         let indexArr = [...new Set(str.split('').map((i, inx) => i.match(/\W|\d/) ? inx : ''))].splice(1)
 
@@ -21,7 +21,7 @@ class VigenereCipheringMachine {
 
         for (let i = 0; i < numberCipher.length; i++) {
 
-            result[i] = abc[(numberStr[i] + numberCipher[i]) % abc.length].toUpperCase()
+            result[i] = this.abc[(numberStr[i] + numberCipher[i]) % this.abc.length]
         }
 
 
@@ -38,11 +38,10 @@ class VigenereCipheringMachine {
             throw new Error('Please set arguments')
         }
 
-        let abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         let result = []
-        let numberStr = str.toLowerCase().replace(/\W|\d/g, '').split('').map(i => i = abc.indexOf(i))
-        let cipher = ''.padStart(numberStr.length, key);
-        let numberCipher = cipher.split('').map(i => i = abc.indexOf(i))
+        let numberStr = str.toUpperCase().replace(/\W|\d/g, '').split('').map(i => i = this.abc.indexOf(i))
+        let cipher = ''.padStart(numberStr.length, key).toUpperCase();
+        let numberCipher = cipher.split('').map(i => i = this.abc.indexOf(i))
 
 
 
@@ -52,7 +51,7 @@ class VigenereCipheringMachine {
 
         for (let i = 0; i < numberCipher.length; i++) {
 
-            result[i] = abc[(numberStr[i] - numberCipher[i] + abc.length) % abc.length].toUpperCase()
+            result[i] = this.abc[(numberStr[i] - numberCipher[i] + this.abc.length) % this.abc.length]
         }
 
 
